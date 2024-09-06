@@ -1,34 +1,63 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react'
+import Navbar from './components/Navbar'
+
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [pokemones, setPokemones] = useState([])
+
+  useEffect(() => {
+    const getPokemones = async () => {
+      const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0')
+      const listaPokemones = await response.json()
+      const { results } = listaPokemones
+
+      const newPokemones = results.map(async (pokemon) => {
+
+        const response = await fetch(pokemon.url)
+        const poke = await response.json()
+
+        return {
+          id: poke.id,
+          name: poke.name,
+          image: poke.sprites.other.dream_world.front_default
+        }
+      })
+      setPokemones(await Promise.all(newPokemones))
+      
+    }
+
+    getPokemones()
+
+  }, [])
 
   return (
+    
     <>
+    <Navbar />
+    
+    <div className="App">
+
+<h1>Pokédex</h1>
+{
+  // eslint-disable-next-line react/jsx-key
+  pokemones.map(pokemon => {
+    return (
+      // eslint-disable-next-line react/jsx-key
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <img src={pokemon.image} alt={pokemon.name} />
+        <p>{pokemon.name}</p>
+        <span>{pokemon.id}</span>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    )
+  })
+}
+</div>
+</>
+
+
   )
 }
 
