@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './pokemones.css';
+import usePokemones from '../hooks/usePokemones';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import Cargando from './Cargando';
 
 function Pokemon({ id, nombre, imagen }) {
   return (
@@ -21,45 +23,19 @@ Pokemon.propTypes = {
 };
 
 function Pokemones() {
-  const [pokemones, setPokemones] = useState([]);
 
-  useEffect(() => {
-    const getPokemones = async () => {
-      try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0');
-        const listaPokemones = await response.json();
-        const { results } = listaPokemones;
-
-        const newPokemones = results.map(async (pokemon) => {
-          try {
-            const response = await fetch(pokemon.url);
-            const poke = await response.json();
-
-            return {
-              id: poke.id,
-              nombre: poke.name,
-              imagen: poke.sprites.other.dream_world.front_default,
-            };
-          } catch (error) {
-            console.error(error);
-            return null;
-          }
-        });
-
-        const pokemonesWithDetails = await Promise.all(newPokemones);
-        setPokemones(pokemonesWithDetails.filter(Boolean));
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    getPokemones();
-  }, []);
+  const { pokemones, masPokemones, verMas } = usePokemones();
 
   return (
-    <section className='pokemon-container'>
+    <InfiniteScroll 
+    dataLength={pokemones.length}
+    next={masPokemones}
+    hasMore={verMas}
+    loader={<Cargando />}
+    endMessage={<h4 className='titulo' style={{ gridColumn: '1/6'}}>No hay mas pokemones</h4>}
+    className='pokemon-container'>
       {pokemones.map((pokemon) => <Pokemon key={pokemon.id} {...pokemon} />)}
-    </section>
+    </InfiniteScroll>
   );
 }
 
