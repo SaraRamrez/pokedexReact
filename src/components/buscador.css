@@ -1,7 +1,6 @@
 .titulo {
     font-size: 36px;
     font-weight: 400;
-    color: black;
     text-align: center;
     margin: 2rem 0 1rem 0;
 }
@@ -15,7 +14,8 @@
 }
 
 .input-buscar {
-    background-color: white;
+    background-color: var(--card);
+    color: var(--text);
     border: 1px solid white;
     border-radius: 10px;
     padding: 12px;
@@ -38,7 +38,7 @@
     gap: 5px;
     flex: .1;
     font-size: 16px;
-    transition: 0.4px;
+    transition: 0.2px;
 }
 
 .btn-buscar > svg {

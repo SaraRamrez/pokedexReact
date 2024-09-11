@@ -1,5 +1,5 @@
 import Navbar from './components/Navbar'
-import Buscador from './components/Buscador'
+
 import Pokemones from './components/Pokemones'
 
 
@@ -13,7 +13,6 @@ function App() {
     
     <>
     <Navbar />
-    <Buscador />
     <Pokemones />
 </>
 
